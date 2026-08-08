@@ -3,6 +3,8 @@
 Làm sao để ứng dụng agent an toàn hơn?
 
 **Hình thức:** bài tập **cá nhân** (1 người / 1 MSSV).
+**Học viên:** [PHẠM THANH HƯNG]
+**MSSV:** 2A202601468
 
 **Đề bài duy nhất:** [`assignment11.md`](assignment11.md) · Cách nộp: [`SUBMISSION.md`](SUBMISSION.md)
 

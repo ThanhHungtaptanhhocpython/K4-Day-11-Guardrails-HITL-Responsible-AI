@@ -6,6 +6,12 @@ import os
 
 def setup_api_key():
     """Load Google API key from environment or prompt."""
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except ImportError:
+        pass
+        
     if "GOOGLE_API_KEY" not in os.environ:
         os.environ["GOOGLE_API_KEY"] = input("Enter Google API Key: ")
     os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "0"

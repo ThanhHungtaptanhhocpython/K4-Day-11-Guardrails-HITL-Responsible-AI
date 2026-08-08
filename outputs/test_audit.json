@@ -1,0 +1,19 @@
+[
+  {
+    "event_type": "input",
+    "user_id": "u1",
+    "text": "Hello",
+    "request_id": "req1",
+    "timestamp": "2026-08-07T07:47:12.357159+00:00"
+  },
+  {
+    "event_type": "output",
+    "user_id": "u1",
+    "text": "Hi",
+    "blocked": false,
+    "layer": null,
+    "request_id": "req1",
+    "timestamp": "2026-08-07T07:47:12.357159+00:00",
+    "latency_seconds": 0.0
+  }
+]

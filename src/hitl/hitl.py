@@ -65,32 +65,39 @@ class ConfidenceRouter:
         Returns:
             RoutingDecision with routing action and metadata
         """
-        # TODO 11: Implement routing logic
-        #
-        # 1. Check if action_type is in HIGH_RISK_ACTIONS
-        #    -> If yes: always escalate (action="escalate", priority="high",
-        #       requires_human=True, reason="High-risk action: {action_type}")
-        #
-        # 2. Check confidence thresholds:
-        #    - confidence >= 0.9:
-        #      action="auto_send", priority="low",
-        #      requires_human=False, reason="High confidence"
-        #
-        #    - 0.7 <= confidence < 0.9:
-        #      action="queue_review", priority="normal",
-        #      requires_human=True, reason="Medium confidence — needs review"
-        #
-        #    - confidence < 0.7:
-        #      action="escalate", priority="high",
-        #      requires_human=True, reason="Low confidence — escalating"
-
-        return RoutingDecision(
-            action="auto_send",
-            confidence=confidence,
-            reason="TODO: implement routing logic",
-            priority="low",
-            requires_human=False,
-        )  # TODO: Replace with implementation
+        if action_type in HIGH_RISK_ACTIONS:
+            return RoutingDecision(
+                action="escalate",
+                confidence=confidence,
+                reason=f"High-risk action: {action_type}",
+                priority="high",
+                requires_human=True
+            )
+            
+        if confidence >= self.HIGH_THRESHOLD:
+            return RoutingDecision(
+                action="auto_send",
+                confidence=confidence,
+                reason="High confidence",
+                priority="low",
+                requires_human=False
+            )
+        elif confidence >= self.MEDIUM_THRESHOLD:
+            return RoutingDecision(
+                action="queue_review",
+                confidence=confidence,
+                reason="Medium confidence — needs review",
+                priority="normal",
+                requires_human=True
+            )
+        else:
+            return RoutingDecision(
+                action="escalate",
+                confidence=confidence,
+                reason="Low confidence — escalating",
+                priority="high",
+                requires_human=True
+            )
 
 
 # ============================================================
@@ -111,33 +118,33 @@ class ConfidenceRouter:
 hitl_decision_points = [
     {
         "id": 1,
-        "name": "TODO: Name this decision point",
-        "trigger": "TODO: When does this trigger?",
-        "hitl_model": "TODO: human-in-the-loop / human-on-the-loop / human-as-tiebreaker",
-        "context_needed": "TODO: What does the reviewer need to see?",
-        "example": "TODO: Give a concrete example scenario",
-        "approval_path": "TODO: Explain approve, reject and timeout behavior",
-        "audit_fields": "TODO: List correlation ID, intent, diff and reviewer decision",
+        "name": "High-Value Transaction Review",
+        "trigger": "Action is transfer_money and amount > 50,000,000 VND or unusual destination",
+        "hitl_model": "human-in-the-loop (must approve before execution)",
+        "context_needed": "User ID, transfer amount, destination account, recent transaction history, LLM reasoning",
+        "example": "User asks to transfer 500 million VND to a new overseas account.",
+        "approval_path": "Approve -> execute transfer. Reject -> block transfer and inform user. Timeout -> block for safety.",
+        "audit_fields": "correlation_id, intent, amount, reviewer_decision, reviewer_id",
     },
     {
         "id": 2,
-        "name": "TODO: Name this decision point",
-        "trigger": "TODO: When does this trigger?",
-        "hitl_model": "TODO: human-in-the-loop / human-on-the-loop / human-as-tiebreaker",
-        "context_needed": "TODO: What does the reviewer need to see?",
-        "example": "TODO: Give a concrete example scenario",
-        "approval_path": "TODO: Explain approve, reject and timeout behavior",
-        "audit_fields": "TODO: List correlation ID, intent, diff and reviewer decision",
+        "name": "Fraud & PII Leak Suspicion",
+        "trigger": "Output Guardrail Judge flags medium/high risk of phishing or PII leak",
+        "hitl_model": "human-on-the-loop (agent redacts/blocks, human reviews offline to lock account if needed)",
+        "context_needed": "Full chat history, detected PII/patterns, LLM explanation",
+        "example": "User claims they lost their card and provides full card number and PIN in chat.",
+        "approval_path": "Approve flag -> freeze account permanently. Reject -> ignore flag. Timeout -> temporary freeze.",
+        "audit_fields": "correlation_id, intent, flagged_text, reviewer_decision, reviewer_id",
     },
     {
         "id": 3,
-        "name": "TODO: Name this decision point",
-        "trigger": "TODO: When does this trigger?",
-        "hitl_model": "TODO: human-in-the-loop / human-on-the-loop / human-as-tiebreaker",
-        "context_needed": "TODO: What does the reviewer need to see?",
-        "example": "TODO: Give a concrete example scenario",
-        "approval_path": "TODO: Explain approve, reject and timeout behavior",
-        "audit_fields": "TODO: List correlation ID, intent, diff and reviewer decision",
+        "name": "Low Confidence / Ambiguous Inquiry",
+        "trigger": "Confidence router scores < 0.7 for a general inquiry",
+        "hitl_model": "human-as-tiebreaker (human must rewrite or approve drafted response)",
+        "context_needed": "User question, top 3 retrieved KB articles, LLM drafted response (if any)",
+        "example": "User asks a complex question about a legacy loan product not fully covered in DB.",
+        "approval_path": "Approve -> send drafted response. Reject -> human rewrites response. Timeout -> inform user to call hotline.",
+        "audit_fields": "correlation_id, intent, diff (LLM draft vs Human rewrite), reviewer_decision",
     },
 ]
 
