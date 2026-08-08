@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-08T11:17:51.539583+00:00",
+  "generated_at": "2026-08-08T11:41:25.294542+00:00",
   "submission_dir": "C:\\Users\\Lenovo\\Documents\\AITC\\Day 11\\K4-Day-11-Guardrails-HITL-Responsible-AI",
   "technical_failure": false,
   "packaging": {
@@ -18,11 +18,11 @@
     "ok": true,
     "error": null,
     "points": 10,
-    "student_id": "2A202601468"
+    "student_id": "SE00000"
   },
   "public_tests": {
-    "returncode": 0,
-    "stdout": ".............                                                            [100%]\n13 passed in 1.81s\n",
+    "returncode": 1,
+    "stdout": "..........F..                                                            [100%]\n=========================== short test summary info ===========================\nFAILED tests/public/test_results_contract.py::test_safe_queries_mostly_unblocked\n1 failed, 12 passed in 2.51s\n",
     "stderr": "",
     "technical_failure": false
   },

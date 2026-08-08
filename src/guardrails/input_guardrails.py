@@ -49,6 +49,8 @@ def detect_injection(user_input: str) -> bool:
         r"reveal your (instructions|prompt)",
         r"pretend you are",
         r"act as (a |an )?unrestricted",
+        r"complete the (following )?template",
+        r"insert password here",
     ]
 
     # 1. Unicode normalization (NFKC)
